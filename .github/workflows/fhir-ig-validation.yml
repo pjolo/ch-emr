@@ -1,27 +1,28 @@
-name: FHIR IG Validation
+name: Build and Deploy FHIR IG to GitHub Pages
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  validate:
-    name: Build & Validate FHIR IG
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Run FHIR IG CI
-        run: |
-          mkdir -p out logs
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -v "$GITHUB_WORKSPACE/out:/output" \
-            -v "$GITHUB_WORKSPACE/logs:/logs" \
-            ghcr.io/trifork/fhir-ig-ci:latest
+      - name: Install Graphviz
+        run: sudo apt-get install -y graphviz
+
+      - name: Create output folders
+        run: mkdir -p out logs
+
+      - uses: qligier/fhir-ig-action@v0.3.0
+        with:
+          ig-publisher: "latest"
+          sushi: "latest"
 
       - name: Upload build logs
         if: always()
@@ -36,5 +37,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fhir-ig-qa
-          path: out/qa.html
+          path: output/qa.html
           retention-days: 7
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./output
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
