@@ -56,7 +56,7 @@ Description: "Swiss Emergency Record based on International Patient Summary"
 * section[sectionRiskFactors].entry ^slicing.discriminator.path = "resolve()"
 * section[sectionRiskFactors].entry ^slicing.rules = #open
 * section[sectionRiskFactors].entry contains riskFactor 0..*
-* section[sectionRiskFactors].entry[riskFactor] only Reference(ChEmrConditionHealthcareProfessionalsRiskFactors)
+* section[sectionRiskFactors].entry[riskFactor] only Reference($CHIPSConditionHealthcareProfessionalsRiskFactors)
 * section[sectionRiskFactors].entry[riskFactor] ^type.aggregation = #bundled
 
 // Advance directive
