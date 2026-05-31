@@ -1,5 +1,5 @@
 Instance: EX-RiskFactor
-InstanceOf: $CHIPSConditionHealthcareProfessionalsRiskFactors
+InstanceOf: ChEmrConditionHealthcareProfessionalsRiskFactors
 Usage: #example
 Title: "EX-RiskFactor"
 Description: "General example of a risk factors"
