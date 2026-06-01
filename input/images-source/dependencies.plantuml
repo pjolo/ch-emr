@@ -4,30 +4,47 @@ skinparam shadowing false
 skinparam rectangle {
   roundCorner 0
 }
-skinparam nodesep 100
-skinparam ranksep 80
+skinparam nodesep 60
+skinparam ranksep 60
 
 skinparam minClassWidth 200
 
-rectangle "<color:Gray><size:16>Core IGs    " as L1 #White;line:White
-rectangle "<color:Gray><size:16>Domain IGs" as L2 #White;line:White
-rectangle "<color:Gray><size:16>EMR IG      " as L3 #White;line:White
+' Row labels (left column, left aligned)
+rectangle "<color:Gray><size:16>Core IGs   \l" as L1 #White;line:White
+rectangle "<color:Gray><size:16>Domain IGs\l" as L2 #White;line:White
+rectangle "<color:Gray><size:16>EMR IG     \l" as L3 #White;line:White
 
-rectangle "**CH Core**\nSwiss core profiles,\nEPR concepts" as chcore #White;line:Red;line.bold;text:Black
-rectangle "**CH Term**\nterminology\n" as chterm #White;line:Red;line.bold;text:Black
-rectangle "\n**CH IPS**\n" as chips #White;line:Orange;line.bold;text:Black
-rectangle "\n**IPS**\n" as ips #White;line:DodgerBlue;line.bold;text:Black
-rectangle "**CH EMED**\neMedikation profiles\n " as chemed #White;line:Purple;line.bold;text:Black
-rectangle "**CH EMR**\nEmergency Record\n " as chemr #White;line:Green;line.bold;text:Black
+' Column 2 (IPS in domain row only)
+rectangle "[[http://hl7.org/fhir/uv/ips/index.html \n**IPS**\n]]" as ips #White;line:DodgerBlue;line.bold;text:Black
 
+' Column 3 (CH Core / CH IPS / CH EMR — vertically aligned)
+rectangle "[[http://fhir.ch/ig/ch-core/index.html **CH Core**\nSwiss core profiles,\nEPR concepts]]" as chcore #White;line:Red;line.bold;text:Black
+rectangle "[[http://fhir.ch/ig/ch-ips/index.html \n**CH IPS**\n]]" as chips #White;line:Orange;line.bold;text:Black
+rectangle "[[http://fhir.ch/ig/ch-emr/index.html **CH EMR**\nEmergency Record\n ]]" as chemr #White;line:Green;line.bold;text:Black
+
+' Column 4 (CH Term / CH EMED — vertically aligned)
+rectangle "[[http://fhir.ch/ig/ch-term/index.html **CH Term**\nterminology\n]]" as chterm #White;line:Red;line.bold;text:Black
+rectangle "[[http://fhir.ch/ig/ch-emed/index.html **CH EMED**\neMedikation profiles\n ]]" as chemed #White;line:Purple;line.bold;text:Black
+
+' Horizontal layout per row
 L1 -[hidden]right- chcore
-L2 -[hidden]right- chips
+chcore -[hidden]right- chterm
+L2 -[hidden]right- ips
+ips -[hidden]right- chips
 chips -[hidden]right- chemed
 L3 -[hidden]right- chemr
 
+' Vertical layout per column
+L1 -[hidden]down- L2
+L2 -[hidden]down- L3
+chcore -[hidden]down- chips
+chips -[hidden]down- chemr
+chterm -[hidden]down- chemed
+
+' Dependency arrows
 chcore -right-> chterm #Silver : <color:Gray>derived
 chips -up-> chcore #Silver : <color:Gray>derived
-chips -right-> ips #Silver : <color:Gray>imposeProfile\n<color:Gray>Extension
+chips -left-> ips #Silver : <color:Gray>imposeProfile\n<color:Gray>Extension
 chemed -up-> chcore #Silver : <color:Gray>derived
 chemr -up-> chips #Silver : <color:Gray>derived
 chemr -up-> chemed #Silver : <color:Gray>uses dosage
